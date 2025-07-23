@@ -105,7 +105,7 @@ describe('GraphQL Resolvers', () => {
         email: 'john@example.com',
         mobile: '0412345678',
         postcode: '2000',
-        services: ['delivery', 'payment'],
+        services: ['DELIVERY', 'PAYMENT'],
         createdAt: new Date('2023-01-01'),
         updatedAt: new Date('2023-01-01'),
       }
@@ -120,7 +120,7 @@ describe('GraphQL Resolvers', () => {
           email: 'john@example.com',
           mobile: '0412345678',
           postcode: '2000',
-          services: ['delivery', 'payment'],
+          services: ['DELIVERY', 'PAYMENT'],
         },
       })
       expect(result).toEqual(mockCreatedLead)
@@ -161,7 +161,7 @@ describe('GraphQL Resolvers', () => {
       ).rejects.toThrow('Failed to register lead')
     })
 
-    it('should convert service enums to lowercase', async () => {
+    it('should preserve service enum case', async () => {
       const input = {
         name: 'Jane Smith',
         email: 'jane@example.com',
@@ -176,7 +176,7 @@ describe('GraphQL Resolvers', () => {
         email: 'jane@example.com',
         mobile: '0487654321',
         postcode: '3000',
-        services: ['delivery', 'pickup', 'payment'],
+        services: ['DELIVERY', 'PICKUP', 'PAYMENT'],
         createdAt: new Date('2023-01-01'),
         updatedAt: new Date('2023-01-01'),
       }
@@ -191,7 +191,7 @@ describe('GraphQL Resolvers', () => {
           email: 'jane@example.com',
           mobile: '0487654321',
           postcode: '3000',
-          services: ['delivery', 'pickup', 'payment'],
+          services: ['DELIVERY', 'PICKUP', 'PAYMENT'],
         },
       })
     })

@@ -27,7 +27,7 @@ export const resolvers = {
             email,
             mobile,
             postcode,
-            services: services.map((service: string) => service.toLowerCase())
+            services: services
           }
         })
         
