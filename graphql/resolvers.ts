@@ -10,9 +10,12 @@ export const resolvers = {
       })
       
              // Convert any lowercase services to uppercase for GraphQL enum compatibility
+       // and ensure dates are properly serialized
        return leads.map((lead: any) => ({
          ...lead,
-         services: lead.services.map((service: string) => service.toUpperCase())
+         services: lead.services.map((service: string) => service.toUpperCase()),
+         createdAt: lead.createdAt.toISOString(),
+         updatedAt: lead.updatedAt.toISOString()
        }))
     },
     lead: async (_: any, { id }: { id: number }) => {
@@ -22,9 +25,13 @@ export const resolvers = {
       
       if (!lead) return null
      
+       // Convert any lowercase services to uppercase for GraphQL enum compatibility
+       // and ensure dates are properly serialized
        return {
          ...lead,
-         services: lead.services.map((service: string) => service.toUpperCase())
+         services: lead.services.map((service: string) => service.toUpperCase()),
+         createdAt: lead.createdAt.toISOString(),
+         updatedAt: lead.updatedAt.toISOString()
        }
     }
   },
@@ -44,7 +51,12 @@ export const resolvers = {
           }
         })
         
-        return lead
+        // Ensure dates are properly serialized
+        return {
+          ...lead,
+          createdAt: lead.createdAt.toISOString(),
+          updatedAt: lead.updatedAt.toISOString()
+        }
       } catch (error: any) {
         if (error.code === 'P2002') {
           throw new Error('A lead with this email already exists')

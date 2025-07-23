@@ -42,6 +42,19 @@ interface Lead {
   createdAt: string
 }
 
+// Safe date formatter to handle invalid dates
+const formatDate = (dateString: string) => {
+  try {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) {
+      return 'Invalid Date'
+    }
+    return date.toLocaleDateString()
+  } catch (error) {
+    return 'Invalid Date'
+  }
+}
+
 export default function Home() {
   const [formData, setFormData] = useState({
     name: '',
@@ -94,7 +107,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
+      <div className="max-w-5xl mx-auto px-5">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Brighte Eats
@@ -298,7 +311,7 @@ export default function Home() {
                           </div>
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(lead.createdAt).toLocaleDateString()}
+                          {formatDate(lead.createdAt)}
                         </td>
                       </tr>
                     ))}
