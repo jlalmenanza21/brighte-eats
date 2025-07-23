@@ -3,16 +3,36 @@ import { prisma } from '../lib/prisma'
 export const resolvers = {
   Query: {
     leads: async () => {
-      return await prisma.lead.findMany({
+      const leads = await prisma.lead.findMany({
         orderBy: {
           createdAt: 'desc'
         }
       })
+      
+             // Convert any lowercase services to uppercase for GraphQL enum compatibility
+       // and ensure dates are properly serialized
+       return leads.map((lead: any) => ({
+         ...lead,
+         services: lead.services.map((service: string) => service.toUpperCase()),
+         createdAt: lead.createdAt.toISOString(),
+         updatedAt: lead.updatedAt.toISOString()
+       }))
     },
     lead: async (_: any, { id }: { id: number }) => {
-      return await prisma.lead.findUnique({
+      const lead = await prisma.lead.findUnique({
         where: { id }
       })
+      
+      if (!lead) return null
+     
+       // Convert any lowercase services to uppercase for GraphQL enum compatibility
+       // and ensure dates are properly serialized
+       return {
+         ...lead,
+         services: lead.services.map((service: string) => service.toUpperCase()),
+         createdAt: lead.createdAt.toISOString(),
+         updatedAt: lead.updatedAt.toISOString()
+       }
     }
   },
   
@@ -27,11 +47,16 @@ export const resolvers = {
             email,
             mobile,
             postcode,
-            services: services.map((service: string) => service.toLowerCase())
+            services: services
           }
         })
         
-        return lead
+        // Ensure dates are properly serialized
+        return {
+          ...lead,
+          createdAt: lead.createdAt.toISOString(),
+          updatedAt: lead.updatedAt.toISOString()
+        }
       } catch (error: any) {
         if (error.code === 'P2002') {
           throw new Error('A lead with this email already exists')
