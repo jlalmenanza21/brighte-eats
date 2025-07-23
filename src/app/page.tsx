@@ -52,8 +52,9 @@ export default function Home() {
   })
   const [showDashboard, setShowDashboard] = useState(false)
   const [registerLead, { loading: registering }] = useMutation(REGISTER_LEAD)
-  const { data, loading, refetch } = useQuery(GET_LEADS, {
-    skip: !showDashboard
+  const { data, loading, error, refetch } = useQuery(GET_LEADS, {
+    skip: !showDashboard,
+    errorPolicy: 'all'
   })
 
   const services = ['DELIVERY', 'PICKUP', 'PAYMENT']
@@ -233,6 +234,16 @@ export default function Home() {
             {loading ? (
               <div className="text-center py-8">
                 <div className="text-gray-600">Loading leads...</div>
+              </div>
+            ) : error ? (
+              <div className="text-center py-8">
+                <div className="text-red-600">Error loading leads: {error.message}</div>
+                <button 
+                  onClick={() => refetch()}
+                  className="mt-2 text-blue-500 hover:text-blue-700"
+                >
+                  Try again
+                </button>
               </div>
             ) : (
               <div className="overflow-x-auto">

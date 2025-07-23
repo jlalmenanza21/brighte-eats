@@ -3,16 +3,29 @@ import { prisma } from '../lib/prisma'
 export const resolvers = {
   Query: {
     leads: async () => {
-      return await prisma.lead.findMany({
+      const leads = await prisma.lead.findMany({
         orderBy: {
           createdAt: 'desc'
         }
       })
+      
+             // Convert any lowercase services to uppercase for GraphQL enum compatibility
+       return leads.map((lead: any) => ({
+         ...lead,
+         services: lead.services.map((service: string) => service.toUpperCase())
+       }))
     },
     lead: async (_: any, { id }: { id: number }) => {
-      return await prisma.lead.findUnique({
+      const lead = await prisma.lead.findUnique({
         where: { id }
       })
+      
+      if (!lead) return null
+     
+       return {
+         ...lead,
+         services: lead.services.map((service: string) => service.toUpperCase())
+       }
     }
   },
   
